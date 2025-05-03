@@ -23,11 +23,24 @@ if uploaded_file is not None:
         hist_range = st.sidebar.slider("Histogram Range:", min_value=float(data_min), max_value=float(data_max), value=(float(data_min), float(data_max)))
 
         fig, ax = plt.subplots()
-        ax.hist(df[selected_column], bins=num_bins, range=hist_range)
+        ax.hist(df[selected_column], bins=num_bins, range=hist_range, edgecolor='black')  # Added edgecolor='black'
         ax.set_xlabel(selected_column)
         ax.set_ylabel("Frequency")
         ax.set_title(f"Histogram of {selected_column}")
         st.pyplot(fig)
+
+        # Descriptive Statistics
+        st.subheader("Descriptive Statistics")
+        selected_series = df[selected_column]
+        st.write(f"**Max:** {selected_series.max()}")
+        st.write(f"**Min:** {selected_series.min()}")
+        st.write(f"**Mode:** {selected_series.mode().iloc[0] if not selected_series.mode().empty else 'No unique mode'}")
+        st.write(f"**Median:** {selected_series.median()}")
+        st.write(f"**Average (Mean):** {selected_series.mean()}")
+        st.write(f"**Standard Deviation:** {selected_series.std()}")
+        st.write("**Quartiles:**")
+        st.write(selected_series.quantile([0.25, 0.50, 0.75]))
+
     else:
         st.warning("No numerical columns found in the uploaded CSV file.")
 else:
