@@ -101,21 +101,3 @@ fig1.text(0.5, 0.94, "Before the first substitution", ha='center', fontsize=10, 
 
 st.pyplot(fig1)
 
-# --- Plot 2: Pass Lines ---
-st.subheader("Pass Network")
-pitch_lines = Pitch(line_color='grey')
-fig2, ax2 = pitch_lines.grid(grid_height=0.6, title_height=0.06, axis=False,
-                            endnote_height=0.04, title_space=-0.3, endnote_space=0)
-
-pitch_lines.scatter(scatter_df.x, scatter_df.y, s=scatter_df.marker_size, color='red', edgecolors='grey', linewidth=1, alpha=1, ax=ax2["pitch"], zorder = 3)
-
-for i, row in scatter_df.iterrows():
-    pitch_lines.annotate(row.player_name, xy=(row.x, row.y), c='black', va='center', ha='center', weight="bold", size=12, ax=ax2["pitch"], zorder = 4 )
-
-for i, row in lines_df.iterrows():
-    player1 = row["pair_key"].split("_")[0]
-    player2 = row["pair_key"].split("_")[1]
-
-    player1_x = scatter_df.loc[scatter_df["player_name"] == player1]["x"].iloc[0]
-    player1_y = scatter_df.loc[scatter_df["player_name"] == player1]["y"].iloc[0]
-    player2_x = scatter_df.loc[scatter_df["player_name"] ==
