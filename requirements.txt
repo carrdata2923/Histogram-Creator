@@ -6,3 +6,4 @@ seaborn # If you use seaborn
 numpy
 mplsoccer
 pandas
+statsbombpy
