@@ -3,3 +3,6 @@ matplotlib
 pandas  # If you use pandas
 seaborn # If you use seaborn
 # Add any other libraries your script imports
+numpy
+mplsoccer
+pandas
