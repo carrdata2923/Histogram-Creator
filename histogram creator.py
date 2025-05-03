@@ -23,7 +23,7 @@ if uploaded_file is not None:
         hist_range = st.sidebar.slider("Histogram Range:", min_value=float(data_min), max_value=float(data_max), value=(float(data_min), float(data_max)))
 
         fig, ax = plt.subplots()
-        ax.hist(df[selected_column], bins=num_bins, range=hist_range, edgecolor='black')  # Added edgecolor='black'
+        ax.hist(df[selected_column], bins=num_bins, range=hist_range, edgecolor='black')
         ax.set_xlabel(selected_column)
         ax.set_ylabel("Frequency")
         ax.set_title(f"Histogram of {selected_column}")
@@ -32,14 +32,30 @@ if uploaded_file is not None:
         # Descriptive Statistics
         st.subheader("Descriptive Statistics")
         selected_series = df[selected_column]
-        st.write(f"**Max:** {selected_series.max()}")
-        st.write(f"**Min:** {selected_series.min()}")
-        st.write(f"**Mode:** {selected_series.mode().iloc[0] if not selected_series.mode().empty else 'No unique mode'}")
-        st.write(f"**Median:** {selected_series.median()}")
-        st.write(f"**Average (Mean):** {selected_series.mean()}")
-        st.write(f"**Standard Deviation:** {selected_series.std()}")
+
+        def format_decimal(value):
+            if isinstance(value, float):
+                return f"{value:.1f}"
+            elif isinstance(value, pd.Series):
+                return value.apply(lambda x: f"{x:.1f}" if isinstance(x, float) else x)
+            return value
+
+        st.write(f"**Max:** {format_decimal(selected_series.max())}")
+        st.write(f"**Min:** {format_decimal(selected_series.min())}")
+        mode_val = selected_series.mode()
+        st.write(f"**Mode:** {format_decimal(mode_val.iloc[0] if not mode_val.empty else 'No unique mode')}")
+        st.write(f"**Median:** {format_decimal(selected_series.median())}")
+        st.write(f"**Average (Mean):** {format_decimal(selected_series.mean())}")
+        st.write(f"**Standard Deviation:** {format_decimal(selected_series.std())}")
         st.write("**Quartiles:**")
-        st.write(selected_series.quantile([0.25, 0.50, 0.75]))
+        st.write(format_decimal(selected_series.quantile([0.25, 0.50, 0.75])))
+
+        # Percentile Calculation
+        st.sidebar.header("Percentile Calculator")
+        percentile_to_calculate = st.sidebar.number_input("Enter a percentile (0-100):", min_value=0, max_value=100, value=50, step=1)
+        if st.sidebar.button("Calculate Percentile"):
+            percentile_value = selected_series.quantile(percentile_to_calculate / 100)
+            st.write(f"**{percentile_to_calculate}th Percentile:** {format_decimal(percentile_value)}")
 
     else:
         st.warning("No numerical columns found in the uploaded CSV file.")
